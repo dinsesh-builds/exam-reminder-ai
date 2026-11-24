@@ -18,7 +18,7 @@ Open `index.html` in a browser. The page posts to `http://127.0.0.1:8000/analyze
 - Builds questions locally from those findings, with difficulty and marks attached.
 - If an exam date is supplied, builds a revision schedule of up to 14 days.
 
-The question generator in `app.py` is rule based. `llm_client.py` is an optional OpenAI path and is not called by the running app. No key is needed for the local path.
+The question generator in `app.py` is rule based. No API key is needed and nothing leaves your machine.
 
 ## API example
 

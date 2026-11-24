@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import HTTPException
 from datetime import datetime, date, timedelta
 import re
 from collections import Counter
@@ -158,7 +159,7 @@ def generate_questions(analysis: dict, subject: str) -> list:
 
 @app.get("/")
 def root():
-    return {"message": "Exam Reminder AI is running", "status": "ok"}
+    return {"message": "Exam Reminder is running", "status": "ok"}
 
 @app.post("/analyze")
 async def analyze(
@@ -167,16 +168,20 @@ async def analyze(
     exam_date: str = Form(None)
 ):
     contents = await file.read()
-    raw_text = extract_text(contents, file.filename or "uploaded_file")
+    try:
+        raw_text = extract_text(contents, file.filename or "uploaded_file")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     analysis = analyze_notes(raw_text)
-    
+
     days_remaining = None
     if exam_date:
-        exam = parse_date(exam_date)
-        today = date.today()
-        days_remaining = (exam - today).days
-    
-    # Generate questions locally (no API needed)
+        try:
+            exam = parse_date(exam_date)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+        days_remaining = (exam - date.today()).days
+
     questions = generate_questions(analysis, subject)
     
     schedule = []
