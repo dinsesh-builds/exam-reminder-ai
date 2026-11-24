@@ -2,6 +2,8 @@
 
 ![CI](https://github.com/dinsesh-builds/exam-reminder-ai/actions/workflows/ci.yml/badge.svg) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+![Generated questions with answer and source](docs/preview.jpeg)
+
 Upload class notes and get practice questions plus a revision schedule. The local path runs without an API key.
 
 ## Run it
