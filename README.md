@@ -37,9 +37,12 @@ The response includes `"status": "ok"`.
 ## Limits
 
 - Image input needs the Tesseract binary installed on the machine, not just the Python package.
+- Files with no readable text return a 400 with a clear message instead of empty results.
 - CORS allows all origins. Restrict it before any public deployment.
-- `index.html` has a fixed API URL. Change `API_URL` there if the server runs elsewhere.
-- Question quality follows the structure of your notes. Scanned handwriting will need a good OCR pass first.
+- The page uses your current origin when served over HTTP, so it works on any host, not only `127.0.0.1`.
+- Question quality follows the structure of your notes. Scanned handwriting needs a good OCR pass first. Treat questions as drafts and check each one against the source shown under it.
+- Copy questions and Print or save as PDF are available after generation. Printing uses a plain black and white stylesheet with no controls or dark background.
+- The page has Paper, Ink and Slate themes.
 
 ## License
 

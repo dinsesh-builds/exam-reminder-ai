@@ -96,7 +96,8 @@ def generate_questions(analysis: dict, subject: str) -> list:
             "type": "definition",
             "difficulty": "Easy",
             "marks": 2,
-            "why_important": "Found as definition in notes"
+            "why_important": "Found as definition in notes",
+            "source": clean_term
         })
     
     # Comparison questions
@@ -107,7 +108,8 @@ def generate_questions(analysis: dict, subject: str) -> list:
             "type": "comparison",
             "difficulty": "Medium",
             "marks": 5,
-            "why_important": "Comparison found in notes"
+            "why_important": "Comparison found in notes",
+            "source": comp
         })
     
     # Short answer from topics
@@ -118,7 +120,8 @@ def generate_questions(analysis: dict, subject: str) -> list:
             "type": "short",
             "difficulty": "Medium",
             "marks": 5,
-            "why_important": f"Mentioned {topic['mentions']} times in notes"
+            "why_important": f"Mentioned {topic['mentions']} times in notes",
+            "source": topic['topic']
         })
     
     # Long answer from top topic
@@ -130,7 +133,8 @@ def generate_questions(analysis: dict, subject: str) -> list:
             "type": "long",
             "difficulty": "Hard",
             "marks": 10,
-            "why_important": "Most frequently mentioned topic"
+            "why_important": "Most frequently mentioned topic",
+            "source": top
         })
     
     # List/process questions
@@ -141,7 +145,8 @@ def generate_questions(analysis: dict, subject: str) -> list:
             "type": "short",
             "difficulty": "Medium",
             "marks": 5,
-            "why_important": "Numbered list found in notes"
+            "why_important": "Numbered list found in notes",
+            "source": lst[:80]
         })
     
     # Formula questions
@@ -152,7 +157,8 @@ def generate_questions(analysis: dict, subject: str) -> list:
             "type": "numerical",
             "difficulty": "Medium",
             "marks": 5,
-            "why_important": "Formula found in notes"
+            "why_important": "Formula found in notes",
+            "source": formula
         })
     
     return questions
@@ -172,6 +178,8 @@ async def analyze(
         raw_text = extract_text(contents, file.filename or "uploaded_file")
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    if not raw_text.strip():
+        raise HTTPException(status_code=400, detail="No readable text found in that file. Try a text based PDF or a clear image.")
     analysis = analyze_notes(raw_text)
 
     days_remaining = None

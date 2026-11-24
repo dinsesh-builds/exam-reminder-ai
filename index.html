@@ -10,718 +10,209 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        /* ============================================
-           THEME VARIABLES - 4 MODES
-           ============================================ */
-        
-        :root {
-            /* Default: Midnight Neon */
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #16161f;
-            --bg-card: #1e1e2e;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0b0;
-            --accent-primary: #ff6b9d;
-            --accent-secondary: #00d4aa;
-            --accent-gradient: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
-            --glow: rgba(255, 107, 157, 0.15);
-            --font-heading: 'Outfit', sans-serif;
-            --font-body: 'Inter', sans-serif;
-            --border-radius: 16px;
-            --shadow: 0 10px 40px rgba(0,0,0,0.4);
-        }
-
-        [data-theme="berry"] {
-            --bg-primary: #121212;
-            --bg-secondary: #1e1e1e;
-            --bg-card: #252525;
-            --text-primary: #ffffff;
-            --text-secondary: #b0b0b0;
-            --accent-primary: #9f7aea;
-            --accent-secondary: #48bb78;
-            --accent-gradient: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);
-            --glow: rgba(159, 122, 234, 0.15);
-            --font-heading: 'Outfit', sans-serif;
-            --font-body: 'Inter', sans-serif;
-        }
-
-        [data-theme="sunset"] {
-            --bg-primary: #0f0f0f;
-            --bg-secondary: #1a1a1a;
-            --bg-card: #222222;
-            --text-primary: #ffffff;
-            --text-secondary: #b8b8b8;
-            --accent-primary: #ffaa00;
-            --accent-secondary: #ff5e57;
-            --accent-gradient: linear-gradient(135deg, #ffaa00 0%, #ff5e57 100%);
-            --glow: rgba(255, 170, 0, 0.15);
-            --font-heading: 'Outfit', sans-serif;
-            --font-body: 'Inter', sans-serif;
-        }
-
-        [data-theme="clean"] {
-            --bg-primary: #f8f9fa;
-            --bg-secondary: #ffffff;
-            --bg-card: #ffffff;
-            --text-primary: #1a1a2e;
-            --text-secondary: #6b6b8a;
-            --accent-primary: #667eea;
-            --accent-secondary: #764ba2;
-            --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --glow: rgba(102, 126, 234, 0.1);
-            --font-heading: 'Plus Jakarta Sans', sans-serif;
-            --font-body: 'DM Sans', sans-serif;
-            --shadow: 0 10px 40px rgba(0,0,0,0.08);
-        }
-
-        /* ============================================
-           BASE STYLES
-           ============================================ */
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: var(--font-body);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 20px;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            font-family: var(--font-heading);
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-        }
-
-        .card {
-            background: var(--bg-card);
-            border-radius: var(--border-radius);
-            padding: 28px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s ease;
-        }
-
-        [data-theme="clean"] .card {
-            border: 1px solid #e8e8f0;
-        }
-
-        .card-title {
-            font-family: var(--font-heading);
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-            font-size: 0.9rem;
-        }
-
-        input[type="text"],
-        input[type="date"] {
-            width: 100%;
-            padding: 12px 16px;
-            background: var(--bg-secondary);
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        [data-theme="clean"] input[type="text"],
-        [data-theme="clean"] input[type="date"] {
-            background: #f8f9fa;
-            border-color: #e8e8f0;
-            color: #1a1a2e;
-        }
-
-        input[type="text"]:focus,
-        input[type="date"]:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px var(--glow);
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            border: 2px dashed rgba(255,255,255,0.2);
-            border-radius: 12px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: var(--bg-secondary);
-        }
-
-        [data-theme="clean"] .file-input-wrapper {
-            border-color: #d0d0e0;
-            background: #f8f9fa;
-        }
-
-        .file-input-wrapper:hover {
-            border-color: var(--accent-primary);
-            background: var(--glow);
-        }
-
-        .file-input-wrapper.has-file {
-            border-color: var(--accent-secondary);
-            background: rgba(0, 212, 170, 0.1);
-        }
-
-        [data-theme="clean"] .file-input-wrapper.has-file {
-            background: #f0fff4;
-        }
-
-        input[type="file"] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .file-icon {
-            font-size: 2rem;
-            margin-bottom: 8px;
-        }
-
-        .file-text {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .file-name {
-            color: var(--accent-secondary);
-            font-weight: 600;
-            margin-top: 8px;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--accent-gradient);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: var(--font-heading);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px var(--glow);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-small {
-            width: auto;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-        }
-
-        .btn-secondary {
-            background: var(--bg-secondary);
-            border: 2px solid rgba(255,255,255,0.1);
-            color: var(--text-primary);
-        }
-
-        [data-theme="clean"] .btn-secondary {
-            background: #f8f9fa;
-            border-color: #e8e8f0;
-            color: #1a1a2e;
-        }
-
-        /* ============================================
-           THEME PICKER
-           ============================================ */
-        
-        .theme-picker {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 1000;
-        }
-
-        .theme-btn {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            background: var(--bg-card);
-            box-shadow: var(--shadow);
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s;
-            border: 2px solid rgba(255,255,255,0.1);
-        }
-
-        .theme-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .theme-menu {
-            position: absolute;
-            bottom: 70px;
-            right: 0;
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255,255,255,0.1);
-            display: none;
-            min-width: 200px;
-        }
-
-        .theme-menu.active {
-            display: block;
-        }
-
-        .theme-option {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-bottom: 6px;
-        }
-
-        .theme-option:hover {
-            background: var(--bg-secondary);
-        }
-
-        .theme-option:last-child {
-            margin-bottom: 0;
-        }
-
-        .theme-dot {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .theme-dot.neon { background: linear-gradient(135deg, #ff6b9d, #00d4aa); }
-        .theme-dot.berry { background: linear-gradient(135deg, #9f7aea, #48bb78); }
-        .theme-dot.sunset { background: linear-gradient(135deg, #ffaa00, #ff5e57); }
-        .theme-dot.clean { background: linear-gradient(135deg, #667eea, #764ba2); border: 2px solid #ddd; }
-
-        .theme-name {
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        .theme-active {
-            background: var(--glow);
-        }
-
-        /* ============================================
-           LOADING & RESULTS
-           ============================================ */
-        
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .loading.active {
-            display: block;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--bg-secondary);
-            border-top-color: var(--accent-primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .results {
-            display: none;
-        }
-
-        .results.active {
-            display: block;
-        }
-
-        .countdown {
-            background: var(--accent-gradient);
-            color: white;
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px var(--glow);
-        }
-
-        .countdown-number {
-            font-family: var(--font-heading);
-            font-size: 3.5rem;
-            font-weight: 700;
-        }
-
-        .countdown-label {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-
-        /* Progress */
-        .progress-bar-container {
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            height: 20px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: var(--accent-gradient);
-            border-radius: 10px;
-            transition: width 0.5s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .progress-stats {
-            display: flex;
-            justify-content: space-between;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 16px;
-        }
-
-        /* Questions */
-        .question-card {
-            background: var(--bg-secondary);
-            border-left: 4px solid var(--accent-primary);
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .question-card.studied {
-            opacity: 0.5;
-        }
-
-        .question-card.studied .question-text {
-            text-decoration: line-through;
-            color: var(--text-secondary);
-        }
-
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .question-type {
-            background: var(--accent-gradient);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .question-marks {
-            color: var(--accent-secondary);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .question-text {
-            color: var(--text-primary);
-            font-weight: 500;
-            margin-bottom: 8px;
-            line-height: 1.5;
-        }
-
-        .question-why {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        .question-footer {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-
-        [data-theme="clean"] .question-footer {
-            border-top-color: #e8e8f0;
-        }
-
-        .checkbox-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        .checkbox-wrapper input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: var(--accent-primary);
-        }
-
-        .checkbox-wrapper span {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .difficulty-easy { border-left-color: var(--accent-secondary) !important; }
-        .difficulty-medium { border-left-color: var(--accent-primary) !important; }
-        .difficulty-hard { border-left-color: #ff6b6b !important; }
-
-        /* Schedule */
-        .schedule-day {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px;
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            margin-bottom: 10px;
-        }
-
-        .day-number {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-heading);
-            font-weight: 700;
-            color: white;
-            flex-shrink: 0;
-            font-size: 0.9rem;
-        }
-
-        .day-high { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); }
-        .day-medium { background: linear-gradient(135deg, #ed8936, #dd6b20); }
-        .day-low { background: linear-gradient(135deg, var(--accent-secondary), #38a169); }
-
-        .day-content {
-            flex: 1;
-        }
-
-        .day-date {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .day-topics {
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        /* Misc */
-        .error {
-            background: rgba(245, 101, 101, 0.1);
-            color: #ff6b6b;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(245, 101, 101, 0.2);
-        }
-
-        .section-title {
-            font-family: var(--font-heading);
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin: 28px 0 14px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid rgba(255,255,255,0.05);
-            color: var(--text-primary);
-        }
-
-        [data-theme="clean"] .section-title {
-            border-bottom-color: #e8e8f0;
-        }
-
-        .analysis-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .tag {
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        [data-theme="clean"] .tag {
-            background: #f8f9fa;
-            border-color: #e8e8f0;
-        }
-
-        .tag-highlight {
-            background: var(--accent-gradient);
-            color: white;
-            border: none;
-        }
-
-        @media print {
-            body { background: white !important; }
-            .card, .question-card, .schedule-day { 
-                break-inside: avoid; 
-                box-shadow: none;
-                border: 1px solid #ddd;
-            }
-            .btn, .file-input-wrapper, .question-footer, .theme-picker { display: none; }
-            .question-card.studied { display: none; }
-        }
+:root {
+  --bg: #f7f6f4;
+  --surface: #ffffff;
+  --surface-2: #f1efec;
+  --text: #20201e;
+  --muted: #625f5a;
+  --border: #dedbd5;
+  --accent: #1a5f8a;
+  --accent-soft: #e6f0f6;
+  --good: #2f6f4e;
+  --warn: #9a5a12;
+  --shadow: 0 1px 2px rgba(30, 25, 20, .05), 0 8px 24px rgba(30, 25, 20, .05);
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+body[data-theme="ink"] {
+  --bg: #101416;
+  --surface: #171d1f;
+  --surface-2: #1e2628;
+  --text: #e7ecee;
+  --muted: #9aa7ab;
+  --border: #2c383b;
+  --accent: #83bfdd;
+  --accent-soft: #1b303b;
+  --good: #7fbe97;
+  --warn: #dfa763;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 26px rgba(0, 0, 0, .3);
+}
+body[data-theme="slate"] {
+  --bg: #eef1f3;
+  --surface: #ffffff;
+  --surface-2: #e4e9ec;
+  --text: #1c2529;
+  --muted: #5d6b71;
+  --border: #ccd5da;
+  --accent: #375f6b;
+  --accent-soft: #dfeaee;
+  --good: #2d6d4c;
+  --warn: #945915;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+button, input { font: inherit; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.topbar {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 28px; background: var(--surface); border-bottom: 1px solid var(--border);
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 650; letter-spacing: -.01em; }
+.brand-mark { width: 28px; height: 28px; border-radius: 6px; background: var(--accent); color: var(--surface); display: grid; place-items: center; font: 700 13px var(--mono); }
+.theme-picker { position: relative; margin-left: auto; }
+.theme-btn { border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 6px; padding: 6px 12px; font-size: 13px; }
+.theme-btn:hover { background: var(--surface-2); }
+.theme-menu {
+  display: none; position: absolute; right: 0; top: calc(100% + 6px); z-index: 5;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  box-shadow: var(--shadow); padding: 5px; min-width: 130px;
+}
+.theme-menu.active { display: grid; }
+.theme-option { border: 0; background: transparent; color: var(--text); text-align: left; padding: 8px 10px; border-radius: 5px; font-size: 13px; }
+.theme-option:hover { background: var(--surface-2); }
+.theme-option.theme-active { color: var(--accent); background: var(--accent-soft); }
+.container { max-width: 840px; margin: 0 auto; padding: 34px 24px 64px; }
+.header { margin-bottom: 26px; }
+.header h1 { font-size: 28px; line-height: 1.25; letter-spacing: -.02em; margin: 0 0 8px; font-weight: 650; }
+.header p { margin: 0; color: var(--muted); max-width: 62ch; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 22px; box-shadow: var(--shadow); margin-bottom: 18px; }
+.card-title { font-size: 13px; font-weight: 600; margin-bottom: 16px; letter-spacing: .01em; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 7px; }
+.form-group input[type="text"], .form-group input[type="date"] {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--surface); color: var(--text);
+}
+.file-input-wrapper {
+  border: 1px dashed var(--border); border-radius: 8px; padding: 26px 16px;
+  text-align: center; background: var(--surface-2); cursor: pointer;
+}
+.file-input-wrapper.has-file { border-style: solid; border-color: var(--accent); background: var(--accent-soft); }
+.file-input-wrapper input { display: block; margin: 0 auto 10px; max-width: 100%; }
+.file-text { font-size: 13px; color: var(--muted); }
+.file-name { font: 12px var(--mono); color: var(--accent); margin-top: 6px; word-break: break-all; }
+.btn {
+  border: 1px solid var(--accent); background: var(--accent); color: var(--surface);
+  border-radius: 6px; padding: 10px 16px; font-size: 14px; font-weight: 550;
+}
+.btn:hover { filter: brightness(1.06); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border); }
+.btn-small { padding: 7px 11px; font-size: 12px; }
+.loading { display: none; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; }
+.loading.active { display: flex; }
+.spinner { width: 15px; height: 15px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.results { display: none; }
+.results.active { display: block; }
+.error { padding: 12px 14px; border: 1px solid var(--warn); border-radius: 8px; color: var(--warn); background: var(--surface); }
+.countdown { display: flex; align-items: baseline; gap: 12px; padding: 14px 0 20px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+.countdown-number { font: 600 34px/1 var(--mono); color: var(--accent); }
+.countdown-label { color: var(--muted); font-size: 13px; }
+.analysis-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 12px; padding: 4px 8px; border-radius: 5px; background: var(--surface-2); border: 1px solid var(--border); color: var(--muted); }
+.tag-highlight { color: var(--accent); background: var(--accent-soft); border-color: transparent; }
+.progress-bar-container { height: 6px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.progress-bar-fill { height: 100%; background: var(--accent); transition: width .18s ease; }
+.progress-stats { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin: 8px 0 14px; }
+.section-title { font-size: 15px; font-weight: 600; margin: 26px 0 12px; }
+.question-card { border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 7px; padding: 15px 16px; margin-bottom: 10px; background: var(--surface); }
+.question-card.difficulty-medium { border-left-color: var(--warn); }
+.question-card.difficulty-hard { border-left-color: var(--text); }
+.question-header { display: flex; gap: 10px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.question-marks { margin-left: auto; }
+.question-text { margin: 10px 0 6px; font-size: 15px; }
+.question-why { font-size: 12px; color: var(--muted); }
+.question-source { font-size: 11px; color: var(--accent); margin-top: 4px; }
+.question-card.studied { opacity: .55; }
+.question-footer { margin-top: 12px; }
+.checkbox-wrapper { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.schedule-day { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.schedule-day:last-child { border-bottom: 0; }
+.day-number { width: 26px; height: 26px; border-radius: 5px; background: var(--surface-2); display: grid; place-items: center; font: 12px var(--mono); color: var(--muted); }
+.day-number.day-high { color: var(--warn); background: var(--surface-2); }
+.day-date { font: 12px var(--mono); color: var(--muted); }
+.day-topics { font-size: 13px; margin-top: 3px; }
+.actions { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+.note { font-size: 12px; color: var(--muted); margin-top: 14px; }
+@media (max-width: 640px) {
+  .topbar { padding: 12px 16px; }
+  .container { padding: 24px 16px 48px; }
+  .header h1 { font-size: 24px; }
+  .card { padding: 16px; }
+}
+@media print {
+  :root, body[data-theme] { --bg: #fff; --surface: #fff; --text: #000; --muted: #333; --border: #bbb; --accent: #000; --surface-2: #fff; }
+  body { background: #fff; color: #000; font-size: 12px; }
+  .topbar, .theme-picker, .actions, .btn, .progress-stats, .checkbox-wrapper, .loading, .note { display: none !important; }
+  .container { max-width: none; padding: 0; }
+  .card { border: 0; box-shadow: none; padding: 0; margin: 0 0 12px; }
+  .question-card { break-inside: avoid; border: 0; border-bottom: 1px solid #999; padding: 8px 0; }
+  .question-card.studied { opacity: 1; }
+  .section-title { margin: 14px 0 8px; }
+  .results { display: block !important; }
+  .countdown { border-bottom: 1px solid #999; }
+  a { color: #000; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
     </style>
 </head>
 <body data-theme="neon">
-    <div class="container">
-        <div class="header">
-            <h1>📚 Exam Reminder</h1>
-            <p>Upload your notes, get predicted questions & track your progress</p>
-        </div>
-
-        <div class="card">
-            <div class="card-title">📤 Upload Notes</div>
-            
-            <div class="form-group">
-                <label>Your Notes (PDF, Image, or Text)</label>
-                <div class="file-input-wrapper" id="fileWrapper">
-                    <input type="file" id="fileInput" accept=".txt,.pdf,.png,.jpg,.jpeg">
-                    <div class="file-icon">📄</div>
-                    <div class="file-text">Click or drag file here</div>
-                    <div class="file-name" id="fileName"></div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Subject</label>
-                <input type="text" id="subject" placeholder="e.g., Biology, Physics, Mathematics">
-            </div>
-
-            <div class="form-group">
-                <label>Exam Date</label>
-                <input type="date" id="examDate">
-            </div>
-
-            <button class="btn" id="analyzeBtn" onclick="analyzeNotes()">
-                🚀 Analyze & Generate Questions
-            </button>
-        </div>
-
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p style="color: var(--text-secondary);">Analyzing your notes...</p>
-        </div>
-
-        <div class="results" id="results"></div>
+<header class="topbar">
+  <div class="brand"><span class="brand-mark">?</span><span>Exam Reminder</span></div>
+  <div class="theme-picker">
+    <button class="theme-btn" type="button" onclick="toggleThemeMenu()">Theme</button>
+    <div class="theme-menu" id="themeMenu">
+      <button class="theme-option" type="button" onclick="setTheme('paper')">Paper</button>
+      <button class="theme-option" type="button" onclick="setTheme('ink')">Ink</button>
+      <button class="theme-option" type="button" onclick="setTheme('slate')">Slate</button>
     </div>
+  </div>
+</header>
 
-    <!-- Theme Picker -->
-    <div class="theme-picker">
-        <div class="theme-menu" id="themeMenu">
-            <div class="theme-option theme-active" onclick="setTheme('neon')">
-                <div class="theme-dot neon"></div>
-                <div class="theme-name">🩷 Midnight Neon</div>
-            </div>
-            <div class="theme-option" onclick="setTheme('berry')">
-                <div class="theme-dot berry"></div>
-                <div class="theme-name">💜 Electric Berry</div>
-            </div>
-            <div class="theme-option" onclick="setTheme('sunset')">
-                <div class="theme-dot sunset"></div>
-                <div class="theme-name">🧡 Sunset Pop</div>
-            </div>
-            <div class="theme-option" onclick="setTheme('clean')">
-                <div class="theme-dot clean"></div>
-                <div class="theme-name">☀️ Clean Slate</div>
-            </div>
-        </div>
-        <button class="theme-btn" onclick="toggleThemeMenu()">🎨</button>
+<div class="container">
+  <div class="header">
+    <h1>Practice questions from your notes</h1>
+    <p>Upload a PDF, image or text file. Question generation runs on this machine and needs no account or API key. Review the questions before you use them.</p>
+  </div>
+
+  <section class="card">
+    <div class="card-title">Your material</div>
+    <div class="form-group">
+      <label for="fileInput">Notes file</label>
+      <div class="file-input-wrapper" id="fileWrapper">
+        <input type="file" id="fileInput" accept=".txt,.pdf,.png,.jpg,.jpeg">
+        <div class="file-text">Choose a PDF, image or text file</div>
+        <div class="file-name" id="fileName"></div>
+      </div>
     </div>
+    <div class="form-group">
+      <label for="subject">Subject</label>
+      <input type="text" id="subject" placeholder="Biology, Physics, History">
+    </div>
+    <div class="form-group">
+      <label for="examDate">Exam date</label>
+      <input type="date" id="examDate">
+    </div>
+    <button class="btn" id="analyzeBtn" type="button" onclick="analyzeNotes()">Generate questions</button>
+  </section>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <span>Reading your notes</span>
+  </div>
+
+  <section class="results" id="results"></section>
+</div>
 
     <script>
         const API_URL = (location.protocol.startsWith('http') ? location.origin : 'http://127.0.0.1:8000') + '/analyze';
         const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         let currentQuestions = [];
-        let currentTheme = localStorage.getItem('examTheme') || 'neon';
+        let currentTheme = localStorage.getItem('examTheme') || 'paper';
         
         // Apply saved theme
         document.body.setAttribute('data-theme', currentTheme);
@@ -879,7 +370,8 @@
                                 <span class="question-marks">${esc(q.marks)} marks</span>
                             </div>
                             <div class="question-text">${i + 1}. ${esc(q.question)}</div>
-                            <div class="question-why">💡 ${esc(q.why_important)}</div>
+                            <div class="question-why">${esc(q.why_important)}</div>
+                            <div class="question-source">From your notes: ${esc(q.source || q.topic || '')}</div>
                             <div class="question-footer">
                                 <label class="checkbox-wrapper">
                                     <input type="checkbox" onchange="toggleStudied(${i})" id="checkbox-${i}">
@@ -912,6 +404,13 @@
                 html += `</div>`;
             }
 
+            html += `
+                <div class="actions">
+                    <button class="btn btn-small" type="button" onclick="copyQuestions()">Copy questions</button>
+                    <button class="btn btn-secondary btn-small" type="button" onclick="window.print()">Print or save as PDF</button>
+                </div>
+                <p class="note">These are drafts generated from patterns in your notes. Check each question against the source before an exam.</p>
+            `;
             results.innerHTML = html;
             results.classList.add('active');
             loadProgress();
@@ -991,6 +490,26 @@
                 if (card) card.classList.remove('studied');
             });
             updateProgressBar();
+        }
+    </script>
+
+    <script>
+        function copyQuestions() {
+            const lines = currentQuestions.map((q, i) =>
+                `${i + 1}. ${q.question} [${q.difficulty}, ${q.marks} marks]\n   From your notes: ${q.source || q.topic || ''}`
+            );
+            const text = lines.join('\n\n');
+            if (!text) return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const b = document.querySelector('[onclick="copyQuestions()"]');
+                    if (b) { b.textContent = 'Copied'; setTimeout(() => { b.textContent = 'Copy questions'; }, 1400); }
+                });
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = text; document.body.appendChild(ta); ta.select();
+                document.execCommand('copy'); ta.remove();
+            }
         }
     </script>
 </body>
