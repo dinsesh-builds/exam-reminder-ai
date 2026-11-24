@@ -6,6 +6,10 @@
 
 Upload class notes and get practice questions plus a revision schedule. The local path runs without an API key.
 
+## Who is this for
+
+Students who want practice questions from their own notes, exam candidates building a revision schedule, and anyone who needs a local PDF to questions tool without uploading documents or paying for an API key.
+
 ## Run it
 
 ```bash
