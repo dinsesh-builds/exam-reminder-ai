@@ -4,7 +4,7 @@ from datetime import datetime, date, timedelta
 import re
 from collections import Counter
 
-from services.ocr_service import extract_text
+from ocr_service import extract_text
 
 app = FastAPI(title="Exam Reminder AI", version="2.0")
 
