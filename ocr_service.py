@@ -10,14 +10,16 @@ TESSERACT_CONFIG = "--oem 3 --psm 6"
 
 def extract_text(file_bytes: bytes, filename: str) -> str:
     name = filename.lower()
-    if name.endswith(".pdf"):
-        return extract_from_pdf(file_bytes)
-    if any(name.endswith(ext) for ext in (".png", ".jpg", ".jpeg", ".bmp", ".tiff")):
-        return extract_from_image(file_bytes)
     try:
+        if name.endswith(".pdf"):
+            return extract_from_pdf(file_bytes)
+        if any(name.endswith(ext) for ext in (".png", ".jpg", ".jpeg", ".bmp", ".tiff")):
+            return extract_from_image(file_bytes)
         return file_bytes.decode("utf-8", errors="backslashreplace")
-    except UnicodeDecodeError:
-        return file_bytes.decode("latin-1", errors="backslashreplace")
+    except ValueError:
+        raise
+    except Exception:
+        raise ValueError("This file could not be read. Check that it is not damaged or encrypted.")
 
 
 def extract_from_pdf(file_bytes: bytes) -> str:

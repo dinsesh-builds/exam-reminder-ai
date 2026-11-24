@@ -1,0 +1,38 @@
+name: Bug report
+description: Report a wrong question, an extraction failure or a UI problem
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a wrong question, paste the question and the source phrase shown under it. That makes it reproducible.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you expect and what did you see?
+    validations:
+      required: true
+  - type: dropdown
+    id: file-type
+    attributes:
+      label: File type
+      options:
+        - PDF with text
+        - Scanned PDF
+        - Image
+        - Text
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Python version and operating system
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example notes
+      description: A short excerpt is enough. Do not upload private documents.

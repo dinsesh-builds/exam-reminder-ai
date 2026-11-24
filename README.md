@@ -1,4 +1,6 @@
-# Exam Reminder AI
+# Exam Reminder
+
+![CI](https://github.com/dinsesh-builds/exam-reminder-ai/actions/workflows/ci.yml/badge.svg) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Upload class notes and get practice questions plus a revision schedule. The local path runs without an API key.
 
@@ -38,8 +40,8 @@ The response includes `"status": "ok"`.
 
 - Image input needs the Tesseract binary installed on the machine, not just the Python package.
 - Files with no readable text return a 400 with a clear message instead of empty results.
-- CORS allows all origins. Restrict it before any public deployment.
-- The page uses your current origin when served over HTTP, so it works on any host, not only `127.0.0.1`.
+- CORS allows local file pages and `127.0.0.1:8000` or `localhost:8000`. Set `EXAM_ALLOWED_ORIGINS` to a comma separated list to serve a hosted UI.
+- The page uses your current origin when served over HTTP, but the browser needs an allowed origin, so a remote host must be added to that list.
 - Question quality follows the structure of your notes. Scanned handwriting needs a good OCR pass first. Treat questions as drafts and check each one against the source shown under it.
 - Copy questions and Print or save as PDF are available after generation. Printing uses a plain black and white stylesheet with no controls or dark background.
 - The page has Paper, Ink and Slate themes.

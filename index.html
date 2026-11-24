@@ -250,7 +250,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 
         // Close menu when clicking outside
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('.theme-picker')) {
+            if (!(e.target instanceof Element) || !e.target.closest('.theme-picker')) {
                 document.getElementById('themeMenu').classList.remove('active');
             }
         });

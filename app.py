@@ -11,12 +11,14 @@ from ocr_service import extract_text
 app = FastAPI(title="Exam Reminder", version="2.0")
 
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024
-ALLOWED_EXTENSIONS = {".txt", ".pdf", ".png", ".jpg", ".jpeg"}
+ALLOWED_EXTENSIONS = {".txt", ".pdf", ".png", ".jpg", ".jpeg", ".bmp", ".tiff"}
 MAGIC = {
     ".pdf": b"%PDF",
     ".png": b"\x89PNG\r\n\x1a\n",
     ".jpg": b"\xff\xd8\xff",
     ".jpeg": b"\xff\xd8\xff",
+    ".bmp": b"BM",
+    ".tiff": (b"II*\x00", b"MM\x00*"),
 }
 
 origins = os.getenv("EXAM_ALLOWED_ORIGINS")
@@ -41,7 +43,7 @@ async def security_headers(request, call_next):
 def validate_upload(filename: str, contents: bytes) -> None:
     extension = os.path.splitext(filename.lower())[1]
     if extension not in ALLOWED_EXTENSIONS:
-        raise HTTPException(status_code=400, detail="Unsupported file type. Use txt, pdf, png, jpg or jpeg.")
+        raise HTTPException(status_code=400, detail="Unsupported file type. Use txt, pdf, png, jpg, jpeg, bmp or tiff.")
     if len(contents) > MAX_UPLOAD_BYTES:
         raise HTTPException(status_code=413, detail="File is larger than 10 MB.")
     expected = MAGIC.get(extension)
@@ -217,7 +219,7 @@ def generate_questions(analysis: dict, subject: str, source_text: str = "") -> l
 
     if source_text:
         haystack = source_text.lower()
-        questions = [q for q in questions if q["answer"].lower() in haystack]
+        questions = [q for q in questions if q["answer"].strip() and q["answer"].lower() in haystack]
 
     return questions
 
@@ -231,7 +233,11 @@ async def analyze(
     subject: str = Form("General"),
     exam_date: str = Form(None)
 ):
-    contents = await file.read()
+    if file.size and file.size > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="File is larger than 10 MB.")
+    contents = await file.read(MAX_UPLOAD_BYTES + 1)
+    if len(contents) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="File is larger than 10 MB.")
     validate_upload(file.filename or "uploaded_file", contents)
     try:
         raw_text = extract_text(contents, file.filename or "uploaded_file")
