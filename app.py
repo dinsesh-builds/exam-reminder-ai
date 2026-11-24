@@ -1,20 +1,52 @@
-from fastapi import FastAPI, File, UploadFile, Form
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import HTTPException
-from datetime import datetime, date, timedelta
+import os
 import re
 from collections import Counter
+from datetime import datetime, date, timedelta
+
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 
 from ocr_service import extract_text
 
-app = FastAPI(title="Exam Reminder AI", version="2.0")
+app = FastAPI(title="Exam Reminder", version="2.0")
 
+MAX_UPLOAD_BYTES = 10 * 1024 * 1024
+ALLOWED_EXTENSIONS = {".txt", ".pdf", ".png", ".jpg", ".jpeg"}
+MAGIC = {
+    ".pdf": b"%PDF",
+    ".png": b"\x89PNG\r\n\x1a\n",
+    ".jpg": b"\xff\xd8\xff",
+    ".jpeg": b"\xff\xd8\xff",
+}
+
+origins = os.getenv("EXAM_ALLOWED_ORIGINS")
+allow_origins = origins.split(",") if origins else ["null", "http://127.0.0.1:8000", "http://localhost:8000"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
+    allow_origins=allow_origins,
+    allow_methods=["POST", "GET"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def security_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
+
+
+def validate_upload(filename: str, contents: bytes) -> None:
+    extension = os.path.splitext(filename.lower())[1]
+    if extension not in ALLOWED_EXTENSIONS:
+        raise HTTPException(status_code=400, detail="Unsupported file type. Use txt, pdf, png, jpg or jpeg.")
+    if len(contents) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="File is larger than 10 MB.")
+    expected = MAGIC.get(extension)
+    if expected and not contents.startswith(expected):
+        raise HTTPException(status_code=400, detail="File content does not match its extension.")
 
 def parse_date(date_str: str):
     formats = ["%Y-%m-%d", "%d-%m-%Y", "%m-%d-%Y", "%d/%m/%Y", "%Y/%m/%d"]
@@ -83,7 +115,25 @@ def find_bold_terms(text: str) -> list:
     caps = re.findall(r"\b([A-Z]{3,15})\b", text)
     return list(set([t.strip() for t in bold + under + caps if len(t) > 2]))[:15]
 
-def generate_questions(analysis: dict, subject: str) -> list:
+def answer_from_source(term: str, source_text: str) -> str:
+    for sentence in re.split(r"(?<=[.!?])\s+", source_text):
+        if term and term.lower() in sentence.lower():
+            return sentence.strip()[:240]
+    return term
+
+
+def bloom_level(question: str) -> str:
+    text = question.lower()
+    if any(word in text for word in ("define", "list", "state", "name", "what is")):
+        return "Remember"
+    if any(word in text for word in ("differentiate", "compare", "infer", "analyze")):
+        return "Analyze"
+    if any(word in text for word in ("formula", "numerical")):
+        return "Apply"
+    return "Understand"
+
+
+def generate_questions(analysis: dict, subject: str, source_text: str = "") -> list:
     """Generate questions directly from analysis without external API."""
     questions = []
     
@@ -161,6 +211,14 @@ def generate_questions(analysis: dict, subject: str) -> list:
             "source": formula
         })
     
+    for question in questions:
+        question["answer"] = answer_from_source(question["source"], source_text)
+        question["bloom"] = bloom_level(question["question"])
+
+    if source_text:
+        haystack = source_text.lower()
+        questions = [q for q in questions if q["answer"].lower() in haystack]
+
     return questions
 
 @app.get("/")
@@ -174,10 +232,11 @@ async def analyze(
     exam_date: str = Form(None)
 ):
     contents = await file.read()
+    validate_upload(file.filename or "uploaded_file", contents)
     try:
         raw_text = extract_text(contents, file.filename or "uploaded_file")
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Could not read text from that file.")
     if not raw_text.strip():
         raise HTTPException(status_code=400, detail="No readable text found in that file. Try a text based PDF or a clear image.")
     analysis = analyze_notes(raw_text)
@@ -190,7 +249,7 @@ async def analyze(
             raise HTTPException(status_code=400, detail=str(e))
         days_remaining = (exam - date.today()).days
 
-    questions = generate_questions(analysis, subject)
+    questions = generate_questions(analysis, subject, raw_text)
     
     schedule = []
     if days_remaining and days_remaining > 0:

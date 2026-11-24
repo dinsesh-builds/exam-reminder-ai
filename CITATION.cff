@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+title: Exam Reminder
+type: software
+authors:
+  - name: dinsesh-builds
+repository-code: https://github.com/dinsesh-builds/exam-reminder-ai
+license: MIT
+keywords:
+  - exam-preparation
+  - pdf
+  - ocr
+  - fastapi
+  - question-generation

@@ -124,6 +124,8 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .question-marks { margin-left: auto; }
 .question-text { margin: 10px 0 6px; font-size: 15px; }
 .question-why { font-size: 12px; color: var(--muted); }
+.question-bloom { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; margin-left: 6px; }
+.question-answer { font-size: 12px; color: var(--good); margin-top: 7px; }
 .question-source { font-size: 11px; color: var(--accent); margin-top: 4px; }
 .question-card.studied { opacity: .55; }
 .question-footer { margin-top: 12px; }
@@ -164,7 +166,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 <header class="topbar">
   <div class="brand"><span class="brand-mark">?</span><span>Exam Reminder</span></div>
   <div class="theme-picker">
-    <button class="theme-btn" type="button" onclick="toggleThemeMenu()">Theme</button>
+    <button class="theme-btn" type="button" onclick="toggleThemeMenu()" aria-expanded="false" aria-label="Choose theme">Theme</button>
     <div class="theme-menu" id="themeMenu">
       <button class="theme-option" type="button" onclick="setTheme('paper')">Paper</button>
       <button class="theme-option" type="button" onclick="setTheme('ink')">Ink</button>
@@ -200,12 +202,12 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
     <button class="btn" id="analyzeBtn" type="button" onclick="analyzeNotes()">Generate questions</button>
   </section>
 
-  <div class="loading" id="loading">
+  <div class="loading" id="loading" role="status" aria-live="polite">
     <div class="spinner"></div>
     <span>Reading your notes</span>
   </div>
 
-  <section class="results" id="results"></section>
+  <section class="results" id="results" aria-live="polite"></section>
 </div>
 
     <script>
@@ -220,7 +222,9 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 
         // Theme functions
         function toggleThemeMenu() {
-            document.getElementById('themeMenu').classList.toggle('active');
+            const menu = document.getElementById('themeMenu');
+            const open = menu.classList.toggle('active');
+            document.querySelector('.theme-btn').setAttribute('aria-expanded', String(open));
         }
 
         function setTheme(theme) {
@@ -229,7 +233,12 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
             localStorage.setItem('examTheme', theme);
             updateThemeActive();
             document.getElementById('themeMenu').classList.remove('active');
+            document.querySelector('.theme-btn').setAttribute('aria-expanded', 'false');
         }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') setTheme(currentTheme);
+        });
 
         function updateThemeActive() {
             document.querySelectorAll('.theme-option').forEach(opt => {
@@ -264,7 +273,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
             const examDate = document.getElementById('examDate').value;
 
             if (!file) {
-                alert('Please select a file first!');
+                showError('Choose a notes file first, then generate again.');
                 return;
             }
 
@@ -370,8 +379,9 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
                                 <span class="question-marks">${esc(q.marks)} marks</span>
                             </div>
                             <div class="question-text">${i + 1}. ${esc(q.question)}</div>
-                            <div class="question-why">${esc(q.why_important)}</div>
-                            <div class="question-source">From your notes: ${esc(q.source || q.topic || '')}</div>
+                            <div class="question-why">${esc(q.why_important)} <span class="question-bloom">${esc(q.bloom || '')}</span></div>
+                            <div class="question-answer">Answer in notes: ${esc(q.answer || '')}</div>
+                            <div class="question-source">Source phrase: ${esc(q.source || q.topic || '')}</div>
                             <div class="question-footer">
                                 <label class="checkbox-wrapper">
                                     <input type="checkbox" onchange="toggleStudied(${i})" id="checkbox-${i}">
@@ -407,6 +417,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
             html += `
                 <div class="actions">
                     <button class="btn btn-small" type="button" onclick="copyQuestions()">Copy questions</button>
+                    <button class="btn btn-secondary btn-small" type="button" onclick="exportAnkiTsv()">Export for Anki</button>
                     <button class="btn btn-secondary btn-small" type="button" onclick="window.print()">Print or save as PDF</button>
                 </div>
                 <p class="note">These are drafts generated from patterns in your notes. Check each question against the source before an exam.</p>
@@ -494,6 +505,24 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
     </script>
 
     <script>
+        function exportAnkiTsv() {
+            const rows = currentQuestions.map(q => [
+                (q.question || '').replace(/\t/g, ' '),
+                (q.answer || '').replace(/\t/g, ' '),
+                (q.source || q.topic || '').replace(/\t/g, ' ')
+            ].join('\t'));
+            if (!rows.length) return;
+            const blob = new Blob([rows.join('\n')], { type: 'text/tab-separated-values;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'exam-questions.tsv';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
         function copyQuestions() {
             const lines = currentQuestions.map((q, i) =>
                 `${i + 1}. ${q.question} [${q.difficulty}, ${q.marks} marks]\n   From your notes: ${q.source || q.topic || ''}`
