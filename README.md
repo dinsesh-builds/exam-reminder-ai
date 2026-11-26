@@ -52,6 +52,10 @@ The response includes `"status": "ok"`.
 - Copy questions and Print or save as PDF are available after generation. Printing uses a plain black and white stylesheet with no controls or dark background.
 - The page has Paper, Ink and Slate themes.
 
+## Related tools
+
+[PrivacyLint](https://github.com/dinsesh-builds/privacylint) scans a folder for leaked secrets, open CORS and old commit emails.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
