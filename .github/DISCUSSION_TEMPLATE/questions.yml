@@ -1,0 +1,21 @@
+title: "[Question]: "
+labels: [question]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ask one question at a time. Include the command you ran and what you expected.
+  - type: textarea
+    id: question
+    attributes:
+      label: What do you want to know?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Python, Node or browser version
+  - type: textarea
+    id: tried
+    attributes:
+      label: What did you already try?

@@ -24,9 +24,9 @@ Open `index.html` in a browser. The page posts to `http://127.0.0.1:8000/analyze
 - Extracts text from an uploaded PDF, image, or text file in `ocr_service.py`. PDFs use pdfplumber. Images use Tesseract OCR.
 - Finds definitions, comparisons, numbered lists, formulas, bold terms, and the most repeated topics.
 - Builds questions locally from those findings, with difficulty and marks attached.
-- If an exam date is supplied, builds a revision schedule of up to 14 days.
+- If an exam date is supplied, builds a revision schedule of up to 13 days.
 
-The question generator in `app.py` is rule based. No API key is needed and nothing leaves your machine.
+The question generator in `app.py` is rule based. No API key is needed and documents are not uploaded. The page loads fonts from Google, so the browser makes a request to `fonts.googleapis.com` and `fonts.gstatic.com`. See [SECURITY.md](SECURITY.md).
 
 ## API example
 
@@ -41,6 +41,16 @@ curl http://127.0.0.1:8000/
 ```
 
 The response includes `"status": "ok"`.
+
+## Performance
+
+A small text upload took 0.109 seconds end to end on this machine, including extraction, question generation and the schedule.
+
+```bash
+curl -s -o NUL -w '%{time_total}' -F 'file=@notes.txt' http://127.0.0.1:8000/analyze
+```
+
+Scanned PDFs go through OCR and take longer. The tool runs locally, so timing depends on your machine.
 
 ## Limits
 

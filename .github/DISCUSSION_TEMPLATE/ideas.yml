@@ -1,0 +1,19 @@
+title: "[Idea]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What should change and why?
+      description: Describe the problem first, then the idea.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: What evidence do you have?
+      description: A repro, a measurement or a real user case.
+  - type: textarea
+    id: scope
+    attributes:
+      label: What would this not cover?
